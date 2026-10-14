@@ -1,53 +1,29 @@
 # Unity
-/[Aa]ssets/AssetStoreTools*
-/[Bb]uild/
-/[Bb]uilds/
-/[Ll]ibrary/
-/[Ll]ocal[Cc]ache/
-/[Ll]ogs/
-/[Mm]emoryCaptures/
-/[Pp]arty/
-/[Tt]emp/
-/[Uu]ser[Ss]ettings/
-/[Vv]sc/
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+[Uu]serSettings/
 *.pidb.meta
 *.pdb.meta
 *.mdb.meta
-
-# Unity generated visual studio / vscode
-sysinfo.txt
-*.pidb
-*.booproj
-*.svd
-*.default.profdata
-*.user
-*.userprefs
-*.unityproj
-*.sln
-*.suo
 *.slnx
 *.csproj
+*.userprefs
 .vscode/
 
 # Rust
+target/
 gateway-rust/target/
-**/*.rs.bk
 
 # Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.env
-.venv
-env/
-venv/
-ENV/
+*.pyc
 brain-server/chroma_db/
 
-# Large 3D Models / Binaries
+# Binaries / Models
 *.vrm
 *.fbx
-*.obj
-*.png
-!unity-project/Assets/**/*.png
