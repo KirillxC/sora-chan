@@ -1,0 +1,13 @@
+{
+  "name": "com.unity.editorcoroutines",
+  "displayName": "Editor Coroutines",
+  "version": "6.6.0",
+  "description": "The editor coroutines package allows developers to start constructs similar to Unity's monobehaviour based coroutines within the editor using arbitrary objects. ",
+  "keywords": [
+    "coroutine",
+    "coroutines",
+    "editor"
+  ],
+  "dependencies": {},
+  "_fingerprint": "af8abaa9a9d21933ff6203fa5714e59f3913ce3f"
+}

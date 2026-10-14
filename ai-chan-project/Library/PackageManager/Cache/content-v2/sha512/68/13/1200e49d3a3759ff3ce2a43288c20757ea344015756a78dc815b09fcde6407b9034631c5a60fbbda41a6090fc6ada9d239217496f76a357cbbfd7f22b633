@@ -1,0 +1,1 @@
+{"status":"Valid","reason":"Signature is ok","isLegacy":false,"attestation":{"version":1,"format":"archive","integrity":"sha256-UatEdbsXtOltKzqk9pVwITeHxT/WAt+1M1rC8wJCD/c=","packageName":"com.unity.testtools.codecoverage","packageVersion":"1.3.0","publishingChannel":"unity","entitlementKeys":[]}}

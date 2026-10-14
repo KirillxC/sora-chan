@@ -1,0 +1,179 @@
+[2026-10-14T17:27:12.896Z][INFO] Command-line: /mnt/data/unity/6000.6.5f1/Editor/Data/Resources/PackageManager/Server/UnityPackageManager server -s 37797 --ipc-path /tmp/Unity-Upm-37797.sock -l 2 --log-file /mnt/data/all/ai-chan/ai-chan-project/Logs/upm.log
+[2026-10-14T17:27:12.909Z][INFO] IPC server started (IPC path=/tmp/Unity-Upm-37797.sock).
+[2026-10-14T17:27:12.910Z][INFO] Hint: To connect to this UPM instance, launch Unity with the command-line parameter -upmIpcPath Upm-37797.
+[2026-10-14T17:27:13.872Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:13.891Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:14.019Z][INFO] project:list-packages --> 200 (147 ms)
+[2026-10-14T17:27:14.922Z][INFO] project:list-packages --> 200 (1031 ms)
+[2026-10-14T17:27:15.081Z][INFO] config:project:get-registries <-- Request received
+params: {}
+[2026-10-14T17:27:15.085Z][INFO] config:project:get-registries --> 200 (4 ms)
+[2026-10-14T17:27:15.091Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:15.159Z][INFO] project:list-packages --> 200 (68 ms)
+[2026-10-14T17:27:18.652Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:18.717Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:18.728Z][INFO] project:list-packages --> 200 (76 ms)
+[2026-10-14T17:27:18.787Z][INFO] project:list-packages --> 200 (70 ms)
+[2026-10-14T17:27:18.895Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:18.951Z][INFO] config:project:get-registries <-- Request received
+params: {}
+[2026-10-14T17:27:18.958Z][INFO] config:project:get-registries --> 200 (8 ms)
+[2026-10-14T17:27:18.970Z][INFO] project:list-packages --> 200 (75 ms)
+[2026-10-14T17:27:20.909Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:20.977Z][INFO] project:list-packages --> 200 (68 ms)
+[2026-10-14T17:27:23.048Z][INFO] packages:get-all-packageinfo <-- Request received
+params: {}
+[2026-10-14T17:27:23.061Z][INFO] packages:get-all-packageinfo <-- Request received
+params: {}
+[2026-10-14T17:27:24.411Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:27:25.586Z][INFO] project:list-packages --> 200 (1175 ms)
+[2026-10-14T17:27:30.113Z][INFO] packages:get-all-packageinfo --> 200 (7052 ms)
+[2026-10-14T17:27:30.343Z][INFO] packages:get-all-packageinfo --> 200 (7295 ms)
+[2026-10-14T17:27:30.426Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.addressables@2.11.2"
+}
+[2026-10-14T17:27:30.439Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.ads.ios-support@1.0.1"
+}
+[2026-10-14T17:27:30.447Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.polyspatial.extensions@3.2.2"
+}
+[2026-10-14T17:27:30.458Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.polyspatial.visionos@3.2.2"
+}
+[2026-10-14T17:27:30.470Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.project-auditor-rules@1.0.3"
+}
+[2026-10-14T17:27:30.479Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.scriptablebuildpipeline@3.0.3"
+}
+[2026-10-14T17:27:30.488Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.web.stripping-tool@1.3.0"
+}
+[2026-10-14T17:27:30.499Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.xr.visionos@3.2.2"
+}
+[2026-10-14T17:27:30.514Z][INFO] packages:get-packageinfo --> 200 (88 ms)
+[2026-10-14T17:27:30.515Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.services.moderation@1.0.2"
+}
+[2026-10-14T17:27:30.519Z][INFO] packages:get-packageinfo <-- Request received
+params: {
+  "packageId": "com.unity.services.multiplayer@2.3.3"
+}
+[2026-10-14T17:27:30.542Z][INFO] packages:get-packageinfo --> 200 (103 ms)
+[2026-10-14T17:27:30.543Z][INFO] packages:get-packageinfo --> 200 (96 ms)
+[2026-10-14T17:27:30.554Z][INFO] packages:get-packageinfo --> 200 (84 ms)
+[2026-10-14T17:27:30.556Z][INFO] packages:get-packageinfo --> 200 (98 ms)
+[2026-10-14T17:27:30.563Z][INFO] packages:get-packageinfo --> 200 (75 ms)
+[2026-10-14T17:27:30.566Z][INFO] packages:get-packageinfo --> 200 (87 ms)
+[2026-10-14T17:27:30.567Z][INFO] packages:get-packageinfo --> 200 (52 ms)
+[2026-10-14T17:27:30.570Z][INFO] packages:get-packageinfo --> 200 (51 ms)
+[2026-10-14T17:27:30.572Z][INFO] packages:get-packageinfo --> 200 (73 ms)
+[2026-10-14T17:33:06.427Z][INFO] project:resolve-packages <-- Request received
+params: {}
+[2026-10-14T17:33:07.592Z][INFO] Cloning git package:
+  Repository: 'https://github.com/vrm-c/UniVRM.git'
+  Package location in repository: 'Assets/VRM'
+  Commit-ish: 'v0.128.0'
+  Destination: '/mnt/data/all/ai-chan/ai-chan-project/Library/PackageCache'
+[2026-10-14T17:33:07.616Z][INFO] Cloning git package:
+  Repository: 'https://github.com/vrm-c/UniVRM.git'
+  Package location in repository: 'Assets/UniGLTF'
+  Commit-ish: 'v0.128.0'
+  Destination: '/mnt/data/all/ai-chan/ai-chan-project/Library/PackageCache'
+[2026-10-14T17:33:07.685Z][INFO] Cloning git package:
+  Repository: 'https://github.com/vrm-c/UniVRM.git'
+  Package location in repository: 'Assets/VRM10'
+  Commit-ish: 'v0.128.0'
+  Destination: '/mnt/data/all/ai-chan/ai-chan-project/Library/PackageCache'
+[2026-10-14T17:33:07.697Z][INFO] Cloning git package:
+  Repository: 'https://github.com/vrm-c/UniVRM.git'
+  Package location in repository: 'Assets/VRMShaders'
+  Commit-ish: 'v0.128.0'
+  Destination: '/mnt/data/all/ai-chan/ai-chan-project/Library/PackageCache'
+[2026-10-14T17:33:34.808Z][ERROR] Error when executing Git command:
+  git lfs pull --include Assets/VRM
+  - message: `/usr/bin/git lfs pull --include Assets/VRM` failed with code 1
+  
+  - stderr: git: 'lfs' is not a git command. See 'git --help'.
+
+The most similar command is
+	refs
+
+[2026-10-14T17:33:42.801Z][ERROR] Error when executing Git command:
+  git checkout 264a6bcf7897082ad381a1bccffb31c25f10cab2 -- Assets/VRMShaders
+  - message: `/usr/bin/git checkout 264a6bcf7897082ad381a1bccffb31c25f10cab2 -- Assets/VRMShaders` failed with code 1
+  
+  - stderr: error: pathspec 'Assets/VRMShaders' did not match any file(s) known to git
+
+[2026-10-14T17:33:42.930Z][ERROR] Error when executing Git command:
+  git lfs pull --include Assets/UniGLTF
+  - message: `/usr/bin/git lfs pull --include Assets/UniGLTF` failed with code 1
+  
+  - stderr: git: 'lfs' is not a git command. See 'git --help'.
+
+The most similar command is
+	refs
+
+[2026-10-14T17:33:45.852Z][ERROR] Error when executing Git command:
+  git lfs pull --include Assets/VRM10
+  - message: `/usr/bin/git lfs pull --include Assets/VRM10` failed with code 1
+  
+  - stderr: git: 'lfs' is not a git command. See 'git --help'.
+
+The most similar command is
+	refs
+
+[2026-10-14T17:33:46.904Z][WARN] Requested version [2.0.0] for package [com.unity.settings-manager] overridden by minimum version [2.1.1].
+[2026-10-14T17:33:46.905Z][INFO] project:resolve-packages --> 200 (40478 ms)
+[2026-10-14T17:33:46.988Z][INFO] config:project:get-registries <-- Request received
+params: {}
+[2026-10-14T17:33:46.992Z][INFO] config:project:get-registries --> 200 (4 ms)
+[2026-10-14T17:33:46.998Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:33:47.979Z][INFO] Cloning git package:
+  Repository: 'https://github.com/vrm-c/UniVRM.git'
+  Package location in repository: 'Assets/VRMShaders'
+  Commit-ish: 'v0.128.0'
+  Destination: '/mnt/data/all/ai-chan/ai-chan-project/Library/PackageCache'
+[2026-10-14T17:33:48.531Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:33:48.553Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:33:48.795Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:33:48.835Z][INFO] config:project:get-registries <-- Request received
+params: {}
+[2026-10-14T17:33:48.838Z][INFO] config:project:get-registries --> 200 (3 ms)
+[2026-10-14T17:33:49.636Z][INFO] project:list-packages <-- Request received
+params: {}
+[2026-10-14T17:34:02.647Z][ERROR] Error when executing Git command:
+  git checkout 264a6bcf7897082ad381a1bccffb31c25f10cab2 -- Assets/VRMShaders
+  - message: `/usr/bin/git checkout 264a6bcf7897082ad381a1bccffb31c25f10cab2 -- Assets/VRMShaders` failed with code 1
+  
+  - stderr: error: pathspec 'Assets/VRMShaders' did not match any file(s) known to git
+
+[2026-10-14T17:34:02.898Z][INFO] project:list-packages --> 200 (14367 ms)
+[2026-10-14T17:34:02.899Z][INFO] project:list-packages --> 200 (14104 ms)
+[2026-10-14T17:34:02.900Z][INFO] project:list-packages --> 200 (14347 ms)
+[2026-10-14T17:34:02.902Z][INFO] project:list-packages --> 200 (13266 ms)
+[2026-10-14T17:34:02.902Z][INFO] project:list-packages --> 200 (15904 ms)
+[2026-10-14T18:06:45.181Z][INFO] Shutting down UnityPackageManager: parent process [37797] is no longer running.
