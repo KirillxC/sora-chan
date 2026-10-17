@@ -36,7 +36,33 @@ namespace AiChan.Editor
         {
             Application.logMessageReceived += OnLogMessageReceived;
             EditorApplication.update += OnEditorUpdate;
+            EditorApplication.quitting += StopServer;
+            AssemblyReloadEvents.beforeAssemblyReload += StopServer;
             StartServer();
+        }
+
+        public static void StopServer()
+        {
+            _isRunning = false;
+            if (_listener != null)
+            {
+                try
+                {
+                    if (_listener.IsListening) _listener.Stop();
+                    _listener.Close();
+                }
+                catch { }
+                _listener = null;
+            }
+            if (_listenerThread != null)
+            {
+                try
+                {
+                    if (_listenerThread.IsAlive) _listenerThread.Abort();
+                }
+                catch { }
+                _listenerThread = null;
+            }
         }
 
         private static void OnLogMessageReceived(string condition, string stackTrace, LogType type)
@@ -120,8 +146,11 @@ namespace AiChan.Editor
                     ThreadPool.QueueUserWorkItem((state) => HandleRequest(context));
                 }
                 catch (HttpListenerException) { break; }
+                catch (System.Threading.ThreadAbortException) { break; }
+                catch (ObjectDisposedException) { break; }
                 catch (Exception ex)
                 {
+                    if (!_isRunning) break;
                     Debug.LogError($"[AgentBridge] Listener error: {ex}");
                 }
             }

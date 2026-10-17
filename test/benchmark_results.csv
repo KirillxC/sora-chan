@@ -1,0 +1,3 @@
+timestamp,provider,endpoint,model,ttft_sec,stream_duration_sec,total_duration_sec,output_tokens,thought_tokens,pure_tps,effective_tps
+2026-10-16 18:46:12,Groq,https://api.groq.com/openai/v1,allam-2-7b,0.309,2.891,3.201,4015,0,1388.59,1254.45
+2026-10-16 18:46:23,Groq,https://api.groq.com/openai/v1,qwen/qwen3.8-27b,0.248,2.928,3.175,1360,0,464.52,428.28

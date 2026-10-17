@@ -27,3 +27,12 @@ brain-server/chroma_db/
 # Binaries / Models
 *.vrm
 *.fbx
+
+.env
+.env.*
+!.env.example
+
+.venv/
+*.log
+screenshot.png
+.agents/teamwork/

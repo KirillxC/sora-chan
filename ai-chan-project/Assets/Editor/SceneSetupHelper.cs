@@ -40,20 +40,35 @@ namespace AiChan.Editor
             floor.transform.position = Vector3.zero;
             floor.transform.localScale = new Vector3(2f, 1f, 2f);
 
-            // 5. Look for imported VRM prefab or spawn placeholder
+            // 5. Look for imported VRM prefab or model asset
             GameObject avatarInstance = null;
-            string[] guids = AssetDatabase.FindAssets("t:Prefab AvatarSample_A");
-            if (guids.Length > 0)
+            AssetDatabase.ImportAsset("Assets/Models/AvatarSample_A.vrm", ImportAssetOptions.ForceUpdate);
+            var vrmAsset = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Models/AvatarSample_A.vrm");
+            if (vrmAsset != null)
             {
-                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (prefab != null)
+                avatarInstance = (GameObject)PrefabUtility.InstantiatePrefab(vrmAsset);
+            }
+
+            if (avatarInstance == null)
+            {
+                string[] guids = AssetDatabase.FindAssets("AvatarSample_A");
+                foreach (var g in guids)
                 {
-                    avatarInstance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
-                    avatarInstance.name = "AiChan_Avatar";
-                    avatarInstance.transform.position = new Vector3(0f, 0f, 0f);
-                    avatarInstance.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                    string p = AssetDatabase.GUIDToAssetPath(g);
+                    var go = AssetDatabase.LoadAssetAtPath<GameObject>(p);
+                    if (go != null)
+                    {
+                        avatarInstance = (GameObject)PrefabUtility.InstantiatePrefab(go);
+                        break;
+                    }
                 }
+            }
+
+            if (avatarInstance != null)
+            {
+                avatarInstance.name = "AiChan_Avatar";
+                avatarInstance.transform.position = Vector3.zero;
+                avatarInstance.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             }
 
             if (avatarInstance == null)

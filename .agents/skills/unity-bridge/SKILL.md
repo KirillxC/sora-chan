@@ -40,3 +40,21 @@ python3 /home/kiriewka/all/ai-chan/.agents/skills/unity-bridge/scripts/unity_ctl
 ### 4. Synthetic Action Injection (Automated Tests)
 * `sim-throw --speed "0,4.5,6"` - Inject a physical ball throw towards the avatar.
 * `sim-touch --zone "HeadTop" --gesture "Stroke" --duration 2.5` - Simulate touching a collider.
+
+---
+
+## Native Unity MCP Server (via Unity CLI)
+
+In addition to `AgentBridgeServer`, the project has the official `com.unity.pipeline` package installed (`ai-chan-project/Packages/manifest.json`).
+The Unity CLI MCP server is registered in Antigravity (`/home/kiriewka/.gemini/config/mcp_config.json`):
+```json
+"unity": {
+  "command": "unity",
+  "args": ["mcp", "--project-path", "/home/kiriewka/all/ai-chan/ai-chan-project"]
+}
+```
+When Unity Editor is open, it exposes live tools dynamically via stdio MCP. You can also run commands via terminal using:
+```bash
+unity command --project-path /home/kiriewka/all/ai-chan/ai-chan-project
+unity command eval "return UnityEngine.Application.unityVersion;"
+```
