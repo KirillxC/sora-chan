@@ -9,10 +9,12 @@ api_key = os.getenv("GROQ_API_KEY")
 if not api_key:
     raise ValueError("GROQ_API_KEY не найден в .env")
 
+base_url = os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1")
+
 # В Groq SDK эндпоинт по умолчанию /openai/v1, поэтому указываем его в base_url
 client = Groq(
     api_key=api_key,
-    base_url="https://api.groq.com/openai/v1",
+    base_url=base_url,
 )
 
 start_time = time.perf_counter()

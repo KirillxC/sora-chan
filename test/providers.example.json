@@ -1,0 +1,25 @@
+{
+  "active_provider": "gemini",
+  "providers": [
+    {
+      "id": "gemini",
+      "name": "Gemini",
+      "type": "gemini",
+      "endpoints": [
+        "https://generativelanguage.googleapis.com"
+      ],
+      "api_key_env": "GEMINI_API_KEY",
+      "api_key": ""
+    },
+    {
+      "id": "groq",
+      "name": "Groq",
+      "type": "openai",
+      "endpoints": [
+        "https://api.groq.com/openai/v1"
+      ],
+      "api_key_env": "GROQ_API_KEY",
+      "api_key": ""
+    }
+  ]
+}

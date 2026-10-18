@@ -36,3 +36,4 @@ brain-server/chroma_db/
 *.log
 screenshot.png
 .agents/teamwork/
+test/providers.json
