@@ -20,6 +20,9 @@ namespace AiChan.Avatar.Expressiveness
         [Tooltip("Player camera. If null, defaults to Camera.main.")]
         [SerializeField] private Camera playerCamera;
 
+        [Tooltip("Player avatar target transform. If null, automatically discovers PlayerController.GazeTarget.")]
+        [SerializeField] private Transform userTarget;
+
         [Tooltip("Expressiveness engine for blush and facial response.")]
         [SerializeField] private AnimeExpressivenessEngine expressivenessEngine;
 
@@ -113,19 +116,22 @@ namespace AiChan.Avatar.Expressiveness
 
         private void Update()
         {
-            if (playerCamera == null)
+            if (userTarget == null)
             {
-                playerCamera = Camera.main;
-                if (playerCamera == null) return;
+                var player = AiChan.Player.PlayerController.Instance != null ? AiChan.Player.PlayerController.Instance : FindFirstObjectByType<AiChan.Player.PlayerController>();
+                if (player != null && player.GazeTarget != null)
+                {
+                    userTarget = player.GazeTarget;
+                }
             }
 
             Vector3 headPos = avatarHead != null ? avatarHead.position : transform.position;
-            Vector3 cameraPos = playerCamera.transform.position;
+            Vector3 userPos = userTarget != null ? userTarget.position : (playerCamera != null ? playerCamera.transform.position : (Camera.main != null ? Camera.main.transform.position : headPos));
 
-            _currentDistance = Vector3.Distance(headPos, cameraPos);
+            _currentDistance = Vector3.Distance(headPos, userPos);
 
             UpdateProximityState();
-            UpdateFacialAndGazeReaction(headPos, cameraPos);
+            UpdateFacialAndGazeReaction(headPos, userPos);
         }
 
         private void UpdateProximityState()
@@ -161,7 +167,7 @@ namespace AiChan.Avatar.Expressiveness
             _intrusionFactor = Mathf.MoveTowards(_intrusionFactor, targetFactor, Time.deltaTime * reactionDamping);
         }
 
-        private void UpdateFacialAndGazeReaction(Vector3 headPos, Vector3 cameraPos)
+        private void UpdateFacialAndGazeReaction(Vector3 headPos, Vector3 targetPos)
         {
             // 1. Emotion and Blush via AnimeExpressivenessEngine
             if (expressivenessEngine != null)
@@ -189,10 +195,10 @@ namespace AiChan.Avatar.Expressiveness
             }
 
             // 2. Gaze Aversion calculation
-            Vector3 directLookDir = (cameraPos - headPos).normalized;
+            Vector3 directLookDir = (targetPos - headPos).normalized;
             if (directLookDir.sqrMagnitude < 0.001f) directLookDir = transform.forward;
 
-            Vector3 deflectedLookTarget = cameraPos;
+            Vector3 deflectedLookTarget = targetPos;
 
             if (enableGazeAversion && _intrusionFactor > 0.05f)
             {

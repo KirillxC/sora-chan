@@ -56,11 +56,29 @@ namespace AiChan.Player
         private Quaternion _initialLeftArmRot = Quaternion.identity;
         private Quaternion _initialRightArmRot = Quaternion.identity;
 
+        public static PlayerController Instance { get; private set; }
+
+        /// <summary>
+        /// Transform that companion AI should gaze at (the player's physical avatar head/face, never the disconnected 3rd person camera).
+        /// </summary>
+        public Transform GazeTarget
+        {
+            get
+            {
+                if (avatarHead != null) return avatarHead;
+                if (cameraMount != null) return cameraMount;
+                return transform;
+            }
+        }
+
+        public Vector3 GazePosition => GazeTarget != null ? GazeTarget.position : transform.position + Vector3.up * 1.5f;
+
         public bool IsGrounded => _isGrounded;
         public Vector3 Velocity => _characterController != null ? _characterController.velocity : Vector3.zero;
 
         private void Awake()
         {
+            Instance = this;
             _characterController = GetComponent<CharacterController>();
             if (_characterController == null)
             {
@@ -75,6 +93,15 @@ namespace AiChan.Player
             _characterController.slopeLimit = 45f;
 
             SetupCameraMount();
+            FindOrSetupAvatar();
+        }
+
+        private void OnDestroy()
+        {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         private void Start()

@@ -235,6 +235,22 @@ namespace AiChan.Avatar.Gaze
 
         private void ResolveTarget()
         {
+            // 1. Prioritize player avatar / GazeTarget if available (never track disconnected 3rd person camera)
+            var player = AiChan.Player.PlayerController.Instance != null ? AiChan.Player.PlayerController.Instance : FindFirstObjectByType<AiChan.Player.PlayerController>();
+            if (player != null && player.GazeTarget != null)
+            {
+                bool isTargetingCamera = _target != null && _target.GetComponent<Camera>() != null;
+                bool isTargetingPlayer = _target != null && (_target == player.transform || _target == player.cameraMount || _target.IsChildOf(player.transform));
+
+                // Re-target if unassigned, pointing to camera, or player switched/updated avatar model
+                if (_target == null || isTargetingCamera || (isTargetingPlayer && _target != player.GazeTarget))
+                {
+                    _target = player.GazeTarget;
+                }
+                return;
+            }
+
+            // 2. Fallback to Camera.main if no player avatar is found
             if (_target == null && _autoAssignMainCamera)
             {
                 Camera mainCam = Camera.main;

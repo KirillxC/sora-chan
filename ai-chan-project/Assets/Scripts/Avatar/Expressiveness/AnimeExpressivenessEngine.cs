@@ -274,26 +274,36 @@ namespace AiChan.Avatar.Expressiveness
 
         private void ApplyVRM10(Vrm10RuntimeExpression expression)
         {
-            expression.SetWeight(ExpressionKey.Happy, _currentWeights[EmotionType.Joy]);
-            expression.SetWeight(ExpressionKey.Angry, _currentWeights[EmotionType.Angry]);
-            expression.SetWeight(ExpressionKey.Sad, _currentWeights[EmotionType.Sorrow]);
-            expression.SetWeight(ExpressionKey.Surprised, _currentWeights[EmotionType.Surprised]);
-            expression.SetWeight(ExpressionKey.Relaxed, _currentWeights[EmotionType.Fun]);
-            expression.SetWeight(ExpressionKey.Neutral, _currentWeights[EmotionType.Neutral]);
-            expression.SetWeight(ExpressionKey.Blink, _currentWeights[EmotionType.Blink]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Happy, _currentWeights[EmotionType.Joy]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Angry, _currentWeights[EmotionType.Angry]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Sad, _currentWeights[EmotionType.Sorrow]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Surprised, _currentWeights[EmotionType.Surprised]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Relaxed, _currentWeights[EmotionType.Fun]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Neutral, _currentWeights[EmotionType.Neutral]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Blink, _currentWeights[EmotionType.Blink]);
 
             // Custom blush key or morphs
             if (_currentWeights[EmotionType.Blush] > 0.001f)
             {
                 var blushKey = ExpressionKey.CreateCustom("Blush");
-                expression.SetWeight(blushKey, _currentWeights[EmotionType.Blush]);
+                SafeSetVrm10Weight(expression, blushKey, _currentWeights[EmotionType.Blush]);
             }
 
             foreach (var kvp in _customWeights)
             {
                 var customKey = ExpressionKey.CreateCustom(kvp.Key);
-                expression.SetWeight(customKey, kvp.Value);
+                SafeSetVrm10Weight(expression, customKey, kvp.Value);
             }
+        }
+
+        private static void SafeSetVrm10Weight(Vrm10RuntimeExpression expression, ExpressionKey key, float weight)
+        {
+            try
+            {
+                expression.SetWeight(key, weight);
+            }
+            catch (KeyNotFoundException) { }
+            catch (ArgumentException) { }
         }
 
         private void ApplyVRM0x(VRMBlendShapeProxy proxy)

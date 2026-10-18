@@ -183,6 +183,34 @@ namespace AiChan.Editor
             string assetRelativePath = "Assets/Models/" + filename;
             return InstallPlayerVrm(assetRelativePath);
         }
+
+        /// <summary>
+        /// Diagnostic verification that AI-Chan tracks Player avatar head and NOT the 3rd person camera.
+        /// </summary>
+        public static string VerifyThirdPersonLookAt()
+        {
+            var player = PlayerController.Instance != null ? PlayerController.Instance : Object.FindFirstObjectByType<PlayerController>();
+            if (player == null) return "ERROR: PlayerController not found in scene";
+
+            var lookAt = Object.FindFirstObjectByType<AiChan.Avatar.Gaze.AvatarLookAtController>();
+            if (lookAt == null) return "ERROR: AvatarLookAtController not found in scene";
+
+            // Switch player to 3rd person
+            player.SetFirstPerson(false);
+
+            Transform gazeTarget = player.GazeTarget;
+            Transform currentTarget = lookAt.Target;
+            Camera mainCam = Camera.main;
+
+            bool isLookingAtAvatar = (currentTarget == gazeTarget && currentTarget != null);
+            bool isLookingAtCamera = (mainCam != null && currentTarget == mainCam.transform);
+
+            Vector3 avatarHeadPos = gazeTarget != null ? gazeTarget.position : Vector3.zero;
+            Vector3 camPos = mainCam != null ? mainCam.transform.position : Vector3.zero;
+            float distBetweenAvatarAndCamera = Vector3.Distance(avatarHeadPos, camPos);
+
+            return $"{{\"isThirdPerson\": {!player.isFirstPerson}, \"targetName\": \"{(currentTarget != null ? currentTarget.name : "null")}\", \"gazeTargetName\": \"{(gazeTarget != null ? gazeTarget.name : "null")}\", \"isLookingAtAvatar\": {isLookingAtAvatar.ToString().ToLower()}, \"isLookingAtCamera\": {isLookingAtCamera.ToString().ToLower()}, \"avatarToCamDist\": {distBetweenAvatarAndCamera:F2}}}";
+        }
     }
 }
 #endif

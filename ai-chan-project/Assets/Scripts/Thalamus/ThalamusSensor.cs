@@ -82,10 +82,14 @@ namespace AiChan.Thalamus
             }
 
             Vector3 targetPos = headBone != null ? headBone.position : transform.position + Vector3.up * 1.4f;
-            Vector3 toTarget = targetPos - playerCamera.transform.position;
-            _playerDistance = toTarget.magnitude;
 
-            if (_playerDistance > 0.001f)
+            // Measure physical distance to player avatar (not disconnected 3rd person camera)
+            var player = AiChan.Player.PlayerController.Instance != null ? AiChan.Player.PlayerController.Instance : FindFirstObjectByType<AiChan.Player.PlayerController>();
+            Vector3 userAvatarPos = (player != null && player.GazeTarget != null) ? player.GazeTarget.position : playerCamera.transform.position;
+            _playerDistance = Vector3.Distance(targetPos, userAvatarPos);
+
+            Vector3 toTarget = targetPos - playerCamera.transform.position;
+            if (toTarget.sqrMagnitude > 0.0001f)
             {
                 float angle = Vector3.Angle(playerCamera.transform.forward, toTarget);
                 if (angle < 15f)
