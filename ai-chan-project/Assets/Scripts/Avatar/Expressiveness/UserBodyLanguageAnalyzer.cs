@@ -202,11 +202,11 @@ namespace AiChan.Avatar.Expressiveness
 
             if (enableGazeAversion && _intrusionFactor > 0.05f)
             {
-                // Deflect down and slightly to the side in avatar body frame
+                // Deflect down and slightly to the side in avatar body frame (positive pitch deflects downward)
                 Vector3 rightDir = transform.right;
                 Vector3 upDir = transform.up;
 
-                Quaternion deflection = Quaternion.AngleAxis(-gazeDeflectPitchDegrees * _intrusionFactor, rightDir)
+                Quaternion deflection = Quaternion.AngleAxis(gazeDeflectPitchDegrees * _intrusionFactor, rightDir)
                                       * Quaternion.AngleAxis(gazeDeflectYawDegrees * _gazeSideSign * _intrusionFactor, upDir);
 
                 Vector3 avertedDir = deflection * directLookDir;

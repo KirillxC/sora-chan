@@ -69,6 +69,7 @@ namespace AiChan.Avatar.Gaze
 
         [Header("Auxiliary Components")]
         [SerializeField] private SaccadeAndBlinkController _saccadeAndBlink;
+        [SerializeField] private SocialGazeController _socialGaze;
         [SerializeField] private ActiveRagdollController _ragdoll;
         [SerializeField] private LimbicController _limbic;
 
@@ -195,6 +196,12 @@ namespace AiChan.Avatar.Gaze
             if (_vrm0XLookAtHead == null)
             {
                 _vrm0XLookAtHead = GetComponentInParent<VRMLookAtHead>();
+            }
+
+            if (_socialGaze == null)
+            {
+                _socialGaze = GetComponent<SocialGazeController>();
+                if (_socialGaze == null) _socialGaze = GetComponentInParent<SocialGazeController>();
             }
 
             if (_ragdoll == null)
@@ -324,11 +331,19 @@ namespace AiChan.Avatar.Gaze
                 saccadeOffset = _saccadeAndBlink.GetWorldSaccadeOffset(gazeRef, Mathf.Max(1.0f, distanceToTarget));
             }
 
-            // Support deflected look-at target from UserBodyLanguageAnalyzer if present
-            var bodyLang = GetComponent<UserBodyLanguageAnalyzer>() ?? GetComponentInParent<UserBodyLanguageAnalyzer>();
-            if (bodyLang != null && bodyLang.IsPersonalSpaceBreached)
+            // Support probabilistic social attention and aversion via SocialGazeController
+            if (_socialGaze != null && _socialGaze.enabled)
             {
-                rawTargetPos = bodyLang.EffectiveLookAtTarget;
+                rawTargetPos = _socialGaze.GetEffectiveGazeTarget(rawTargetPos);
+            }
+            else
+            {
+                // Support deflected look-at target from UserBodyLanguageAnalyzer if present
+                var bodyLang = GetComponent<UserBodyLanguageAnalyzer>() ?? GetComponentInParent<UserBodyLanguageAnalyzer>();
+                if (bodyLang != null && bodyLang.IsPersonalSpaceBreached)
+                {
+                    rawTargetPos = bodyLang.EffectiveLookAtTarget;
+                }
             }
 
             Vector3 effectiveTargetPos = rawTargetPos + saccadeOffset;

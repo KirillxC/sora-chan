@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UniVRM10;
 using VRM;
+using AiChan.Avatar.Expressiveness;
 
 namespace AiChan.Avatar.Gaze
 {
@@ -94,6 +95,8 @@ namespace AiChan.Avatar.Gaze
             set => _enableSaccades = value;
         }
 
+        public bool IsBlinking => _currentBlinkPhase != BlinkPhase.Waiting || _currentBlinkWeight > 0.001f;
+
         private void Awake()
         {
             FindVrmComponents();
@@ -124,10 +127,16 @@ namespace AiChan.Avatar.Gaze
             }
         }
 
+        public void Step(float deltaTime)
+        {
+            UpdateBlink(deltaTime);
+            UpdateSaccades(deltaTime);
+            ApplyBlinkWeight(_currentBlinkWeight);
+        }
+
         private void Update()
         {
-            UpdateBlink(Time.deltaTime);
-            UpdateSaccades(Time.deltaTime);
+            Step(Time.deltaTime);
         }
 
         private void LateUpdate()
@@ -218,23 +227,50 @@ namespace AiChan.Avatar.Gaze
 
         private void ApplyBlinkWeight(float weight)
         {
-            if (_vrm10Instance != null && _vrm10Instance.Runtime != null)
+            if (_vrm10Instance != null && _vrm10Instance.Runtime != null && _vrm10Instance.Runtime.Expression != null)
             {
-                _vrm10Instance.Runtime.Expression.SetWeight(ExpressionKey.Blink, weight);
+                try
+                {
+                    _vrm10Instance.Runtime.Expression.SetWeight(ExpressionKey.Blink, weight);
+                }
+                catch (Exception) { }
             }
             else if (_vrm0XProxy != null)
             {
-                _vrm0XProxy.SetValue(BlendShapePreset.Blink, weight);
+                try
+                {
+                    _vrm0XProxy.SetValue(BlendShapePreset.Blink, weight);
+                }
+                catch (Exception) { }
+            }
+
+            // Also forward to AnimeExpressivenessEngine if present (supports fallback SkinnedMeshRenderer blendshapes)
+            var expressiveness = GetComponent<AnimeExpressivenessEngine>() ?? GetComponentInParent<AnimeExpressivenessEngine>();
+            if (expressiveness != null)
+            {
+                expressiveness.SetEmotion(EmotionType.Blink, weight, 15);
             }
         }
 
         /// <summary>
-        /// Triggers an immediate voluntary or reflexive blink.
+        /// Triggers an immediate voluntary or reflexive micro-blink.
         /// </summary>
         public void ForceBlink()
         {
             _currentBlinkPhase = BlinkPhase.Closing;
             _blinkTimer = 0f;
+        }
+
+        /// <summary>
+        /// Triggers a target saccade shift. Large saccades (>= 20 degrees) automatically trigger a coordinated micro-blink.
+        /// </summary>
+        public void TriggerSaccade(Vector2 targetOffsetDeg)
+        {
+            _targetSaccadeOffset = targetOffsetDeg;
+            if (targetOffsetDeg.magnitude >= 20.0f)
+            {
+                ForceBlink();
+            }
         }
 
         #endregion

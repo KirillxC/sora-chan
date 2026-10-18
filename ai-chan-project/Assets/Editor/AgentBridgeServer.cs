@@ -224,7 +224,8 @@ namespace AiChan.Editor
                     }
 
                 case "/api/refresh":
-                    AssetDatabase.Refresh();
+                    AssetDatabase.Refresh(ImportAssetOptions.ForceUpdate);
+                    UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
                     return "{\"status\": \"refresh_triggered\"}";
 
                 case "/api/playmode":
@@ -272,7 +273,8 @@ namespace AiChan.Editor
                 if (type == null)
                     return "{\"error\": \"type_not_found\", \"type\": \"" + req.type + "\"}";
 
-                var method = type.GetMethod(req.method, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+                var method = type.GetMethod(req.method, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, Type.EmptyTypes, null)
+                    ?? type.GetMethod(req.method, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
                 if (method == null)
                     return "{\"error\": \"method_not_found\", \"method\": \"" + req.method + "\"}";
 

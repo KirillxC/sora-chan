@@ -59,7 +59,7 @@ namespace AiChan.Spinal
             {
                 bone = HumanBodyBones.LeftLowerArm, parentBone = HumanBodyBones.LeftUpperArm, mass = 1.5f, radius = 0.04f,
                 primaryAxis = new Vector3(0, 1, 0), secondaryAxis = new Vector3(1, 0, 0),
-                lowAngularXLimit = 0f, highAngularXLimit = 135f, angularYLimit = 5f, angularZLimit = 5f
+                lowAngularXLimit = -135f, highAngularXLimit = 5f, angularYLimit = 5f, angularZLimit = 5f
             },
             new BoneJointDef
             {
@@ -79,7 +79,7 @@ namespace AiChan.Spinal
             {
                 bone = HumanBodyBones.RightLowerArm, parentBone = HumanBodyBones.RightUpperArm, mass = 1.5f, radius = 0.04f,
                 primaryAxis = new Vector3(0, -1, 0), secondaryAxis = new Vector3(1, 0, 0),
-                lowAngularXLimit = 0f, highAngularXLimit = 135f, angularYLimit = 5f, angularZLimit = 5f
+                lowAngularXLimit = -135f, highAngularXLimit = 5f, angularYLimit = 5f, angularZLimit = 5f
             },
             new BoneJointDef
             {

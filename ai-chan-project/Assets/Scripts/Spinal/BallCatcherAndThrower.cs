@@ -66,8 +66,11 @@ namespace AiChan.Spinal
             {
                 Vector3 holdPos = chestTransform != null ? chestTransform.position + chestTransform.forward * 0.35f : transform.position + Vector3.up * 1.2f + transform.forward * 0.35f;
                 ballRb.transform.position = holdPos;
-                ballRb.linearVelocity = Vector3.zero;
-                ballRb.angularVelocity = Vector3.zero;
+                if (!ballRb.isKinematic)
+                {
+                    ballRb.linearVelocity = Vector3.zero;
+                    ballRb.angularVelocity = Vector3.zero;
+                }
                 handsWeight = Mathf.MoveTowards(handsWeight, 0.7f, Time.deltaTime * 3f);
                 return;
             }

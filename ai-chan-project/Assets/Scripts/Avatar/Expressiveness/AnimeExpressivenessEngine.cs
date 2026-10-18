@@ -63,6 +63,8 @@ namespace AiChan.Avatar.Expressiveness
             set => SetBlush(value, 0);
         }
 
+        public float CurrentBlush => globalBlush;
+
         public EmotionType CurrentEmotion => _currentPrimaryEmotion;
         public int CurrentPriority => _currentPriority;
 
@@ -223,6 +225,8 @@ namespace AiChan.Avatar.Expressiveness
             if (dt <= 0f) return;
 
             // Interpolate emotion weights
+            if (_currentWeights.Count == 0) InitEmotionWeights();
+
             for (int i = 0; i < AllEmotionValues.Length; i++)
             {
                 var emo = AllEmotionValues[i];
@@ -251,6 +255,11 @@ namespace AiChan.Avatar.Expressiveness
             ApplyWeightsToModel();
         }
 
+        private float GetEmotionWeight(EmotionType emo)
+        {
+            return _currentWeights != null && _currentWeights.TryGetValue(emo, out float val) ? val : 0f;
+        }
+
         private void ApplyWeightsToModel()
         {
             bool applied = false;
@@ -274,19 +283,20 @@ namespace AiChan.Avatar.Expressiveness
 
         private void ApplyVRM10(Vrm10RuntimeExpression expression)
         {
-            SafeSetVrm10Weight(expression, ExpressionKey.Happy, _currentWeights[EmotionType.Joy]);
-            SafeSetVrm10Weight(expression, ExpressionKey.Angry, _currentWeights[EmotionType.Angry]);
-            SafeSetVrm10Weight(expression, ExpressionKey.Sad, _currentWeights[EmotionType.Sorrow]);
-            SafeSetVrm10Weight(expression, ExpressionKey.Surprised, _currentWeights[EmotionType.Surprised]);
-            SafeSetVrm10Weight(expression, ExpressionKey.Relaxed, _currentWeights[EmotionType.Fun]);
-            SafeSetVrm10Weight(expression, ExpressionKey.Neutral, _currentWeights[EmotionType.Neutral]);
-            SafeSetVrm10Weight(expression, ExpressionKey.Blink, _currentWeights[EmotionType.Blink]);
+            SafeSetVrm10Weight(expression, ExpressionKey.Happy, GetEmotionWeight(EmotionType.Joy));
+            SafeSetVrm10Weight(expression, ExpressionKey.Angry, GetEmotionWeight(EmotionType.Angry));
+            SafeSetVrm10Weight(expression, ExpressionKey.Sad, GetEmotionWeight(EmotionType.Sorrow));
+            SafeSetVrm10Weight(expression, ExpressionKey.Surprised, GetEmotionWeight(EmotionType.Surprised));
+            SafeSetVrm10Weight(expression, ExpressionKey.Relaxed, GetEmotionWeight(EmotionType.Fun));
+            SafeSetVrm10Weight(expression, ExpressionKey.Neutral, GetEmotionWeight(EmotionType.Neutral));
+            SafeSetVrm10Weight(expression, ExpressionKey.Blink, GetEmotionWeight(EmotionType.Blink));
 
             // Custom blush key or morphs
-            if (_currentWeights[EmotionType.Blush] > 0.001f)
+            float blush = GetEmotionWeight(EmotionType.Blush);
+            if (blush > 0.001f)
             {
                 var blushKey = ExpressionKey.CreateCustom("Blush");
-                SafeSetVrm10Weight(expression, blushKey, _currentWeights[EmotionType.Blush]);
+                SafeSetVrm10Weight(expression, blushKey, blush);
             }
 
             foreach (var kvp in _customWeights)
@@ -308,16 +318,17 @@ namespace AiChan.Avatar.Expressiveness
 
         private void ApplyVRM0x(VRMBlendShapeProxy proxy)
         {
-            proxy.ImmediatelySetValue(BlendShapePreset.Joy, _currentWeights[EmotionType.Joy]);
-            proxy.ImmediatelySetValue(BlendShapePreset.Angry, _currentWeights[EmotionType.Angry]);
-            proxy.ImmediatelySetValue(BlendShapePreset.Sorrow, _currentWeights[EmotionType.Sorrow]);
-            proxy.ImmediatelySetValue(BlendShapePreset.Fun, _currentWeights[EmotionType.Fun]);
-            proxy.ImmediatelySetValue(BlendShapePreset.Neutral, _currentWeights[EmotionType.Neutral]);
-            proxy.ImmediatelySetValue(BlendShapePreset.Blink, _currentWeights[EmotionType.Blink]);
+            proxy.ImmediatelySetValue(BlendShapePreset.Joy, GetEmotionWeight(EmotionType.Joy));
+            proxy.ImmediatelySetValue(BlendShapePreset.Angry, GetEmotionWeight(EmotionType.Angry));
+            proxy.ImmediatelySetValue(BlendShapePreset.Sorrow, GetEmotionWeight(EmotionType.Sorrow));
+            proxy.ImmediatelySetValue(BlendShapePreset.Fun, GetEmotionWeight(EmotionType.Fun));
+            proxy.ImmediatelySetValue(BlendShapePreset.Neutral, GetEmotionWeight(EmotionType.Neutral));
+            proxy.ImmediatelySetValue(BlendShapePreset.Blink, GetEmotionWeight(EmotionType.Blink));
 
-            if (_currentWeights[EmotionType.Blush] > 0.001f)
+            float blush = GetEmotionWeight(EmotionType.Blush);
+            if (blush > 0.001f)
             {
-                proxy.ImmediatelySetValue("Blush", _currentWeights[EmotionType.Blush]);
+                proxy.ImmediatelySetValue("Blush", blush);
             }
 
             foreach (var kvp in _customWeights)
