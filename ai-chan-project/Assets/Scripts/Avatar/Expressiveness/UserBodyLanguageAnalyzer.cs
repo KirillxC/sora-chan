@@ -190,15 +190,15 @@ namespace AiChan.Avatar.Expressiveness
 
             // 2. Gaze Aversion calculation
             Vector3 directLookDir = (cameraPos - headPos).normalized;
-            if (directLookDir.sqrMagnitude < 0.001f) directLookDir = avatarHead != null ? avatarHead.forward : transform.forward;
+            if (directLookDir.sqrMagnitude < 0.001f) directLookDir = transform.forward;
 
             Vector3 deflectedLookTarget = cameraPos;
 
             if (enableGazeAversion && _intrusionFactor > 0.05f)
             {
-                // Deflect down and slightly to the side
-                Vector3 rightDir = avatarHead != null ? avatarHead.right : transform.right;
-                Vector3 upDir = avatarHead != null ? avatarHead.up : transform.up;
+                // Deflect down and slightly to the side in avatar body frame
+                Vector3 rightDir = transform.right;
+                Vector3 upDir = transform.up;
 
                 Quaternion deflection = Quaternion.AngleAxis(-gazeDeflectPitchDegrees * _intrusionFactor, rightDir)
                                       * Quaternion.AngleAxis(gazeDeflectYawDegrees * _gazeSideSign * _intrusionFactor, upDir);

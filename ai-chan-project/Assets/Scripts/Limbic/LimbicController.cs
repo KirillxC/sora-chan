@@ -129,6 +129,12 @@ namespace AiChan.Limbic
         {
             if (!enableLookAt || headBone == null || ragdollController == null) return;
 
+            if (Application.isPlaying)
+            {
+                var lookAt = GetComponent<AiChan.Avatar.Gaze.AvatarLookAtController>();
+                if (lookAt != null && lookAt.enabled) return;
+            }
+
             Vector3 targetDir = (lookAtWorldTarget - headBone.position).normalized;
             if (targetDir.sqrMagnitude < 0.001f) return;
 

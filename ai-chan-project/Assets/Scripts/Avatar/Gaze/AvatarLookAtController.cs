@@ -3,6 +3,8 @@ using UnityEngine;
 using UniVRM10;
 using VRM;
 using AiChan.Avatar.Expressiveness;
+using AiChan.Spinal;
+using AiChan.Limbic;
 
 namespace AiChan.Avatar.Gaze
 {
@@ -67,6 +69,8 @@ namespace AiChan.Avatar.Gaze
 
         [Header("Auxiliary Components")]
         [SerializeField] private SaccadeAndBlinkController _saccadeAndBlink;
+        [SerializeField] private ActiveRagdollController _ragdoll;
+        [SerializeField] private LimbicController _limbic;
 
         private Vrm10Instance _vrm10Instance;
         private VRMLookAtHead _vrm0XLookAtHead;
@@ -192,6 +196,41 @@ namespace AiChan.Avatar.Gaze
             {
                 _vrm0XLookAtHead = GetComponentInParent<VRMLookAtHead>();
             }
+
+            if (_ragdoll == null)
+            {
+                _ragdoll = GetComponent<ActiveRagdollController>();
+                if (_ragdoll == null) _ragdoll = GetComponentInParent<ActiveRagdollController>();
+            }
+
+            if (_limbic == null)
+            {
+                _limbic = GetComponent<LimbicController>();
+                if (_limbic == null) _limbic = GetComponentInParent<LimbicController>();
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (_ragdoll != null && _ragdoll.enabled)
+            {
+                var muscle = _ragdoll.Muscles.Find(m => m.bone == HumanBodyBones.Head);
+                if (muscle != null)
+                {
+                    muscle.targetLocalRotation = muscle.initialLocalRotation;
+                }
+            }
+            else
+            {
+                if (_neckBone != null && _initialNeckLocalRotation != default)
+                {
+                    _neckBone.localRotation = _initialNeckLocalRotation;
+                }
+                if (_headBone != null && _initialHeadLocalRotation != default)
+                {
+                    _headBone.localRotation = _initialHeadLocalRotation;
+                }
+            }
         }
 
         private void ResolveTarget()
@@ -299,45 +338,57 @@ namespace AiChan.Avatar.Gaze
         {
             if (_headBone == null) return;
 
-            Transform baseReference = _neckBone != null && _neckBone.parent != null ? _neckBone.parent : transform;
-            Vector3 originPos = _neckBone != null ? _neckBone.position : _headBone.position;
+            Transform parent = _headBone.parent != null ? _headBone.parent : transform;
+            Vector3 originPos = _headBone.position;
             Vector3 directionToTarget = worldTarget - originPos;
 
             if (directionToTarget.sqrMagnitude < 0.0001f) return;
 
-            // Compute target rotation in world space looking towards target
-            Quaternion targetLookRotation = Quaternion.LookRotation(directionToTarget.normalized, Vector3.up);
+            Vector3 targetDir = directionToTarget.normalized;
+            Vector3 localDir = parent.InverseTransformDirection(targetDir);
 
-            // Compute delta relative to base reference
-            Quaternion relativeRotation = Quaternion.Inverse(baseReference.rotation) * targetLookRotation;
-            Vector3 euler = relativeRotation.eulerAngles;
-            float yaw = Mathf.DeltaAngle(0f, euler.y);
-            float pitch = Mathf.DeltaAngle(0f, euler.x);
+            float yaw = Mathf.Atan2(localDir.x, localDir.z) * Mathf.Rad2Deg;
+            float pitch = -Mathf.Atan2(localDir.y, Mathf.Sqrt(localDir.x * localDir.x + localDir.z * localDir.z)) * Mathf.Rad2Deg;
 
-            // Clamp angles to realistic physiological bounds
             float clampedYaw = Mathf.Clamp(yaw, -_maxHorizontalAngle, _maxHorizontalAngle);
             float clampedPitch = Mathf.Clamp(pitch, -_maxPitchUpAngle, _maxPitchDownAngle);
+            float clampedRoll = Mathf.Clamp(_currentTiltAngle, -_maxTiltAngle, _maxTiltAngle);
 
-            // Calculate rotation offsets
             float effectiveYaw = clampedYaw * weight;
             float effectivePitch = clampedPitch * weight;
-            float effectiveRoll = _currentTiltAngle * weight;
+            float effectiveRoll = clampedRoll * weight;
 
-            Quaternion totalLookRotation = Quaternion.Euler(effectivePitch, effectiveYaw, effectiveRoll);
+            Quaternion gazeOffset = Quaternion.Euler(effectivePitch, effectiveYaw, effectiveRoll);
 
-            // Distribute rotation between neck and head
-            float neckRatio = Mathf.Clamp01(_neckRotationRatio);
-            float headRatio = 1f - neckRatio;
-
-            Quaternion neckDelta = Quaternion.Slerp(Quaternion.identity, totalLookRotation, neckRatio);
-            Quaternion headDelta = Quaternion.Slerp(Quaternion.identity, totalLookRotation, headRatio);
-
-            if (_neckBone != null)
+            if (_ragdoll != null && _ragdoll.enabled)
             {
-                _neckBone.rotation = baseReference.rotation * neckDelta;
-            }
+                var muscle = _ragdoll.Muscles.Find(m => m.bone == HumanBodyBones.Head);
+                Quaternion baseRot = (muscle != null && muscle.initialLocalRotation != default) ? muscle.initialLocalRotation : _initialHeadLocalRotation;
+                Quaternion localTargetRot = gazeOffset * baseRot;
 
-            _headBone.rotation = (_neckBone != null ? _neckBone.rotation : baseReference.rotation) * headDelta;
+                _ragdoll.SetMuscleTarget(HumanBodyBones.Head, localTargetRot);
+
+                if (_limbic != null)
+                {
+                    _limbic.lookAtWorldTarget = worldTarget;
+                    _limbic.headTiltAngle = _currentTiltAngle;
+                }
+            }
+            else
+            {
+                float neckRatio = Mathf.Clamp01(_neckRotationRatio);
+                float headRatio = 1f - neckRatio;
+
+                Quaternion neckOffset = Quaternion.Euler(effectivePitch * neckRatio, effectiveYaw * neckRatio, 0f);
+                Quaternion headOffset = Quaternion.Euler(effectivePitch * headRatio, effectiveYaw * headRatio, effectiveRoll);
+
+                if (_neckBone != null)
+                {
+                    _neckBone.localRotation = neckOffset * _initialNeckLocalRotation;
+                }
+
+                _headBone.localRotation = headOffset * _initialHeadLocalRotation;
+            }
         }
 
         private void ApplyVrmLookAt(Vector3 targetWorldPosition)
