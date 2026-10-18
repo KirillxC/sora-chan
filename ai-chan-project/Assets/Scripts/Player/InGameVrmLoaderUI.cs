@@ -249,8 +249,9 @@ namespace AiChan.Player
 
             try
             {
-                // Asynchronously load VRM 1.0 / 0.x via UniVRM
-                var vrmInstance = await Vrm10.LoadPathAsync(vrmPath);
+                // Asynchronously load VRM 1.0 / 0.x via UniVRM.
+                // ControlRigGenerationOption.None ensures UniVRM does not create a secondary ControlRig that overwrites physical bone rotations in LateUpdate.
+                var vrmInstance = await Vrm10.LoadPathAsync(vrmPath, controlRigGenerationOption: ControlRigGenerationOption.None);
                 if (vrmInstance == null)
                 {
                     _statusMessage = "ERROR: UniVRM не смог разобрать файл модели.";
@@ -301,15 +302,45 @@ namespace AiChan.Player
                     _statusMessage = "Расстановка суставов, пружин и коллайдеров...";
                     bool ok = RuntimeRagdollRigger.RigActiveRagdoll(avatarGo, pinHips: true);
 
-                    // Add LookAt and Thalamus
+                    // Add full companion stack: LookAt, Thalamus, Limbic, Cortex, Expressiveness
+                    var ragdoll = avatarGo.GetComponent<AiChan.Spinal.ActiveRagdollController>();
+                    
                     if (avatarGo.GetComponent<AiChan.Avatar.Gaze.AvatarLookAtController>() == null)
                     {
                         avatarGo.AddComponent<AiChan.Avatar.Gaze.AvatarLookAtController>();
                     }
 
+                    var thalamus = avatarGo.GetComponent<AiChan.Thalamus.ThalamusSensor>();
+                    if (thalamus == null) thalamus = avatarGo.AddComponent<AiChan.Thalamus.ThalamusSensor>();
+
+                    var limbic = avatarGo.GetComponent<AiChan.Limbic.LimbicController>();
+                    if (limbic == null) limbic = avatarGo.AddComponent<AiChan.Limbic.LimbicController>();
+                    limbic.ragdollController = ragdoll;
+
+                    var cortex = avatarGo.GetComponent<AiChan.Cortex.CortexBridgeClient>();
+                    if (cortex == null) cortex = avatarGo.AddComponent<AiChan.Cortex.CortexBridgeClient>();
+                    cortex.thalamusSensor = thalamus;
+                    cortex.limbicController = limbic;
+                    cortex.ragdollController = ragdoll;
+
+                    if (avatarGo.GetComponent<AiChan.Spinal.BallCatcherAndThrower>() == null)
+                    {
+                        avatarGo.AddComponent<AiChan.Spinal.BallCatcherAndThrower>();
+                    }
+
+                    if (avatarGo.GetComponent<AiChan.Avatar.Expressiveness.AnimeExpressivenessEngine>() == null)
+                    {
+                        avatarGo.AddComponent<AiChan.Avatar.Expressiveness.AnimeExpressivenessEngine>();
+                    }
+
+                    if (avatarGo.GetComponent<AiChan.Avatar.Expressiveness.UserBodyLanguageAnalyzer>() == null)
+                    {
+                        avatarGo.AddComponent<AiChan.Avatar.Expressiveness.UserBodyLanguageAnalyzer>();
+                    }
+
                     if (ok)
                     {
-                        _statusMessage = $"✅ Модель '{avatarGo.name}' заспавнена! Все 15 физических суставов расставлены.";
+                        _statusMessage = $"✅ Модель '{avatarGo.name}' заспавнена! Все 15 физических суставов и нейро-слои активны.";
                     }
                     else
                     {
